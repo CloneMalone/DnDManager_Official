@@ -1,6 +1,24 @@
+@model DnDManager.Models.Encounter
+
 @{
-    ViewData["Title"] = "Encounters";
+    ViewData["Title"] = "Encounter Details";
 }
 
-<h2>Encounters</h2>
-<p>Coming soon.</p>
+<h2>Encounter Details</h2>
+
+<div>
+    <h4>Encounter</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Outcome</dt>
+        <dd class="col-sm-10">@Model.Outcome</dd>
+    </dl>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</p>
