@@ -1,6 +1,26 @@
-@{
-    ViewData["Title"] = "Log Entries";
-}
+@model DnDManager.Models.LogEntry
 
-<h2>Log Entries</h2>
-<p>Coming soon.</p>
+<h2>Edit Log Entry</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label asp-for="Action"></label>
+        <input asp-for="Action" />
+    </div>
+
+    <div>
+        <label asp-for="Description"></label>
+        <input asp-for="Description" />
+    </div>
+
+    <div>
+        <label asp-for="EncounterId"></label>
+        <input asp-for="EncounterId" />
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<a asp-action="Index">Back to List</a>
