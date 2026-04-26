@@ -1,6 +1,14 @@
-@{
-    ViewData["Title"] = "Log Entries";
-}
+@model DnDManager.Models.LogEntry
 
-<h2>Log Entries</h2>
-<p>Coming soon.</p>
+<h2>Log Entry Details</h2>
+
+<div>
+    <p><strong>Action:</strong> @Model.Action</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+    <p><strong>Encounter ID:</strong> @Model.EncounterId</p>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</p>
