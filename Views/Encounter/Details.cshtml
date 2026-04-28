@@ -1,24 +1,87 @@
 @model DnDManager.Models.Encounter
 
 @{
-    ViewData["Title"] = "Encounter Details";
+    ViewData["Title"] = Model.Name;
 }
 
-<h2>Encounter Details</h2>
-
-<div>
-    <h4>Encounter</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.Name</dd>
-
-        <dt class="col-sm-2">Outcome</dt>
-        <dd class="col-sm-10">@Model.Outcome</dd>
-    </dl>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <h2 class="mb-0">@Model.Name</h2>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="text-muted mb-0">@Model.Description</p>
+        }
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.EncounterId" class="btn btn-secondary btn-sm">Edit</a>
+        <a asp-controller="SessionLog" asp-action="Details" asp-route-id="@Model.SessionLogId" class="btn btn-outline-secondary btn-sm">Back to Session</a>
+    </div>
 </div>
 
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</p>
+@if (!string.IsNullOrEmpty(Model.Outcome))
+{
+    <div class="alert alert-success mt-2"><strong>Outcome:</strong> @Model.Outcome</div>
+}
+
+<hr />
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h4 class="mb-0">Log Entries <span class="badge bg-secondary">@Model.LogEntries.Count</span></h4>
+    <a asp-controller="LogEntry" asp-action="Create" asp-route-encounterId="@Model.EncounterId" class="btn btn-success btn-sm">+ Add Log Entry</a>
+</div>
+
+@if (Model.LogEntries.Count == 0)
+{
+    <p class="text-muted">No log entries yet. Add one to begin recording the encounter.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Rnd</th>
+                    <th>Turn</th>
+                    <th>Actor</th>
+                    <th>Target</th>
+                    <th>Action</th>
+                    <th>Roll</th>
+                    <th>Dmg</th>
+                    <th>Heal</th>
+                    <th>HP After</th>
+                    <th>Condition</th>
+                    <th>Notes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model.LogEntries.OrderBy(e => e.RoundNumber).ThenBy(e => e.TurnOrder))
+                {
+                    <tr>
+                        <td>@entry.RoundNumber</td>
+                        <td>@entry.TurnOrder</td>
+                        <td><strong>@entry.ActorName</strong></td>
+                        <td>@entry.TargetName</td>
+                        <td><span class="badge bg-primary">@entry.ActionType</span><br /><small>@entry.ActionDescription</small></td>
+                        <td>@entry.AttackRoll</td>
+                        <td>@(entry.DamageDealt.HasValue? entry.DamageDealt.ToString() : "-")</td>
+                        <td>@(entry.HealingDone.HasValue? entry.HealingDone.ToString() : "-")</td>
+                        <td>@(entry.HpAfterAction.HasValue? entry.HpAfterAction.ToString() : "-")</td>
+                        <td>@entry.ConditionApplied</td>
+                        <td><small>@entry.Notes</small></td>
+                        <td class="text-end">
+                            <a asp-controller="LogEntry" asp-action="Edit" asp-route-id="@entry.LogEntryId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "LogEntry", new { id = entry.LogEntryId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this log entry?')">
+                                    Del
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
