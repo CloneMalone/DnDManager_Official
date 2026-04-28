@@ -1,34 +1,54 @@
-@model IEnumerable<DnDManager.Models.Encounter>
+@model List<DnDManager.Models.Encounter>
 
 @{
     ViewData["Title"] = "Encounters";
 }
 
-<h2>Encounters</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Encounters</h2>
+    <div>
+        <a asp-action="Create" asp-route-sessionLogId="@ViewBag.SessionLogId" class="btn btn-primary btn-sm">+ Add Encounter</a>
+        <a asp-controller="SessionLog" asp-action="Details" asp-route-id="@ViewBag.SessionLogId" class="btn btn-secondary btn-sm">Back to Session</a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Encounter</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Outcome</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Outcome</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No encounters yet. Add one to start logging combat.</div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Outcome</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enc in Model)
+                {
+                    <tr>
+                        <td><strong>@enc.Name</strong></td>
+                        <td>@enc.Description</td>
+                        <td>@enc.Outcome</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-info">View</a>
+                            <a asp-action="Edit" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "Encounter", new { id = enc.EncounterId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this encounter and all its log entries?')">
+                                    Delete
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
