@@ -1,31 +1,527 @@
-html {
-  font-size: 14px;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* -----------------------------------------------
+   Custom Properties
+----------------------------------------------- */
+:root {
+    --dnd-bg: #111114;
+    --dnd-surface: #1a1a20;
+    --dnd-surface-alt: #22222c;
+    --dnd-border: #352d1a;
+    --dnd-border-accent: #5a4820;
+    --dnd-text: #ddd0b0;
+    --dnd-text-muted: #857660;
+    --dnd-heading: #c8a040;
+    --dnd-accent: #902030;
+    --dnd-accent-hover: #a82838;
+    --dnd-accent2: #2a5228;
+    --dnd-font-display: 'Cinzel', 'Palatino Linotype', Georgia, serif;
+    --dnd-font-body: 'Crimson Text', Georgia, 'Times New Roman', serif;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* -----------------------------------------------
+   Bootstrap Variable Overrides
+----------------------------------------------- */
+:root {
+    --bs-body-bg: var(--dnd-bg);
+    --bs-body-color: var(--dnd-text);
+    --bs-border-color: var(--dnd-border);
+    --bs-secondary-color: var(--dnd-text-muted);
+    --bs-link-color: var(--dnd-heading);
+    --bs-link-hover-color: #e0b84a;
+    --bs-card-bg: var(--dnd-surface);
+    --bs-card-border-color: var(--dnd-border-accent);
+    --bs-card-cap-bg: var(--dnd-surface-alt);
+
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* -----------------------------------------------
+   Base
+----------------------------------------------- */
 body {
-  margin-bottom: 60px;
+    background-color: var(--dnd-bg);
+    background-image: radial-gradient(ellipse at 50% 0%, #1d192a 0%, var(--dnd-bg) 65%);
+    color: var(--dnd-text);
+    font-family: var(--dnd-font-body);
+    font-size: 1rem;
+    min-height: 100vh;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+::selection {
+    background-color: var(--dnd-accent);
+    color: #f0e8cc;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* -----------------------------------------------
+   Typography
+----------------------------------------------- */
+h1, h2, h3, h4 {
+    font-family: var(--dnd-font-display);
+    color: var(--dnd-heading);
+    letter-spacing: 0.03em;
+}
+
+h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* -----------------------------------------------
+   Links
+----------------------------------------------- */
+a {
+    color: var(--dnd-heading);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #e0b84a;
+        text-decoration: underline;
+    }
+
+/* -----------------------------------------------
+   Navbar
+----------------------------------------------- */
+.navbar {
+    background-color: #0c0c0f !important;
+    border-bottom: 2px solid var(--dnd-accent);
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+}
+
+.navbar-brand {
+    font-family: var(--dnd-font-display);
+    color: var(--dnd-heading) !important;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+    .navbar-brand:hover {
+        color: #e0b84a !important;
+        text-decoration: none;
+    }
+
+.navbar-nav .nav-link {
+    color: #b8a882 !important;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: color 0.15s ease;
+}
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+        color: var(--dnd-heading) !important;
+        text-decoration: none;
+    }
+
+/* -----------------------------------------------
+   Cards
+----------------------------------------------- */
+.card {
+    background-color: var(--dnd-surface);
+    border: 1px solid var(--dnd-border-accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+.card-header {
+    background-color: var(--dnd-surface-alt);
+    font-family: var(--dnd-font-display);
+    font-weight: 600;
+    color: var(--dnd-heading);
+    border-bottom: 1px solid var(--dnd-border-accent);
+    padding: 0.6rem 1rem;
+    letter-spacing: 0.02em;
+}
+
+.card-body {
+    color: var(--dnd-text);
+}
+
+/* -----------------------------------------------
+   Tables
+----------------------------------------------- */
+
+.table {
+    --bs-table-bg: var(--dnd-surface);
+    --bs-table-color: var(--dnd-text);
+    --bs-table-striped-bg: #15151a;
+    --bs-table-striped-color: var(--dnd-text);
+    --bs-table-hover-bg: #252535;
+    --bs-table-hover-color: var(--dnd-text);
+    --bs-table-active-color: var(--dnd-text);
+    --bs-table-border-color: var(--dnd-border);
+    color: var(--dnd-text);
+    border-color: var(--dnd-border);
+}
+
+    
+.table > :not(caption) > * > * {
+    color: var(--dnd-text);
+    border-color: var(--dnd-border);
+}
+
+/* tbody cells */
+.table > tbody > * > * {
+    color: var(--dnd-text);
+}
+
+.table > thead > * > * {
+    background-color: #0d0d11;
+    color: var(--dnd-heading);
+    border-color: var(--dnd-border-accent);
+}
+
+.table th {
+    font-family: var(--dnd-font-display);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    color: var(--dnd-heading);
+    text-transform: uppercase;
+    border-bottom-color: var(--dnd-border-accent) !important;
+}
+
+.table td {
+    vertical-align: middle;
+    border-color: var(--dnd-border);
+    color: var(--dnd-text);
+}
+
+
+.table-dark {
+    --bs-table-bg: #0d0d11;
+    --bs-table-color: var(--dnd-heading);
+    --bs-table-striped-bg: #121218;
+    --bs-table-striped-color: var(--dnd-text);
+    --bs-table-hover-color: var(--dnd-text);
+    --bs-table-border-color: var(--dnd-border);
+    background-color: #0d0d11;
+    color: var(--dnd-heading);
+}
+
+.table-dark > * > * {
+    background-color: #0d0d11;
+    color: var(--dnd-heading);
+    border-color: var(--dnd-border-accent);
+}
+
+/*
+   Hover — set --bs-table-bg-state for Bootstrap's box-shadow layer
+   AND set background-color directly as a fallback.
+*/
+.table-hover > tbody > tr:hover > * {
+    --bs-table-bg-state: #252535;
+    color: var(--dnd-text);
+}
+
+.table-hover tbody tr:hover > td {
+    background-color: #252535;
+    color: var(--dnd-text);
+}
+
+/* Subtle row stripe for combat tracker defeated state */
+.table-secondary td {
+    color: var(--dnd-text-muted);
+    font-style: italic;
+}
+
+/* -----------------------------------------------
+   Buttons
+----------------------------------------------- */
+
+/* Primary — muted crimson */
+.btn-primary {
+    --bs-btn-bg: var(--dnd-accent);
+    --bs-btn-border-color: var(--dnd-accent);
+    --bs-btn-hover-bg: var(--dnd-accent-hover);
+    --bs-btn-hover-border-color: var(--dnd-accent-hover);
+    --bs-btn-active-bg: #7a1825;
+    --bs-btn-active-border-color: #7a1825;
+    --bs-btn-color: #f0e8cc;
+    --bs-btn-hover-color: #f0e8cc;
+    --bs-btn-active-color: #f0e8cc;
+    --bs-btn-focus-shadow-rgb: 144, 32, 48;
+    font-family: var(--dnd-font-display);
+    letter-spacing: 0.03em;
+}
+
+/* Outline primary */
+.btn-outline-primary {
+    --bs-btn-color: var(--dnd-heading);
+    --bs-btn-border-color: var(--dnd-heading);
+    --bs-btn-hover-bg: rgba(200, 160, 64, 0.15);
+    --bs-btn-hover-color: var(--dnd-heading);
+    --bs-btn-hover-border-color: var(--dnd-heading);
+    --bs-btn-active-bg: rgba(200, 160, 64, 0.25);
+    --bs-btn-active-color: var(--dnd-heading);
+}
+
+/* Secondary — muted dark stone */
+.btn-secondary {
+    --bs-btn-bg: #2e2e38;
+    --bs-btn-border-color: var(--dnd-border-accent);
+    --bs-btn-hover-bg: #3a3a48;
+    --bs-btn-hover-border-color: var(--dnd-border-accent);
+    --bs-btn-active-bg: #252530;
+    --bs-btn-color: #c8bfa8;
+    --bs-btn-hover-color: #ddd0b0;
+    --bs-btn-active-color: #ddd0b0;
+}
+
+/* Outline secondary */
+.btn-outline-secondary {
+    --bs-btn-color: #a09070;
+    --bs-btn-border-color: var(--dnd-border-accent);
+    --bs-btn-hover-bg: rgba(90, 72, 32, 0.25);
+    --bs-btn-hover-color: #c8bfa8;
+    --bs-btn-hover-border-color: #7a6030;
+    --bs-btn-active-bg: rgba(90, 72, 32, 0.4);
+    --bs-btn-active-color: #c8bfa8;
+}
+
+/* Success — dark forest green */
+.btn-success {
+    --bs-btn-bg: var(--dnd-accent2);
+    --bs-btn-border-color: #3a7035;
+    --bs-btn-hover-bg: #346830;
+    --bs-btn-hover-border-color: #3a7035;
+    --bs-btn-active-bg: #224020;
+    --bs-btn-color: #b8e0b0;
+    --bs-btn-hover-color: #c8ecc0;
+    --bs-btn-active-color: #c8ecc0;
+}
+
+.btn-outline-success {
+    --bs-btn-color: #6ab060;
+    --bs-btn-border-color: #3a7035;
+    --bs-btn-hover-bg: rgba(42, 82, 40, 0.35);
+    --bs-btn-hover-color: #88c880;
+    --bs-btn-hover-border-color: #4a8040;
+    --bs-btn-active-bg: rgba(42, 82, 40, 0.5);
+    --bs-btn-active-color: #88c880;
+}
+
+/* Info — deep teal */
+.btn-info {
+    --bs-btn-bg: #1a4a58;
+    --bs-btn-border-color: #1f607a;
+    --bs-btn-hover-bg: #205870;
+    --bs-btn-hover-border-color: #237090;
+    --bs-btn-active-bg: #143848;
+    --bs-btn-color: #90d0e0;
+    --bs-btn-hover-color: #a8dcea;
+    --bs-btn-active-color: #a8dcea;
+}
+
+/* Danger — deep red */
+.btn-danger {
+    --bs-btn-bg: #6e1a1a;
+    --bs-btn-border-color: #882020;
+    --bs-btn-hover-bg: #7e2020;
+    --bs-btn-hover-border-color: #992828;
+    --bs-btn-active-bg: #5a1212;
+    --bs-btn-color: #f0c8c8;
+    --bs-btn-hover-color: #f8d0d0;
+    --bs-btn-active-color: #f8d0d0;
+}
+
+/* Tighten spacing in toolbars */
+.btn-sm {
+    font-size: 0.8rem;
+}
+
+/* -----------------------------------------------
+   Forms
+----------------------------------------------- */
+.form-control,
+.form-select {
+    background-color: #18181e;
+    border: 1px solid var(--dnd-border-accent);
+    color: var(--dnd-text);
+    border-radius: 4px;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #1e1e26;
+        color: var(--dnd-text);
+        border-color: var(--dnd-heading);
+        box-shadow: 0 0 0 0.2rem rgba(200, 160, 64, 0.2);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--dnd-text-muted);
+        opacity: 1;
+    }
+
+.form-label {
+    font-family: var(--dnd-font-display);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--dnd-heading);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+/* Keep dark background on validation state */
+.form-control.is-invalid,
+.form-control.is-valid {
+    background-color: #18181e;
+}
+
+.invalid-feedback {
+    color: #e07070;
+}
+
+.valid-feedback {
+    color: #70b870;
+}
+
+/* Checkbox and radio accent color */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--dnd-heading);
+}
+
+/* Form check label */
+.form-check-label {
+    color: var(--dnd-text);
+}
+
+/* Input group addons */
+.input-group-text {
+    background-color: var(--dnd-surface-alt);
+    border-color: var(--dnd-border-accent);
+    color: var(--dnd-text-muted);
+}
+
+/* -----------------------------------------------
+   Badges
+----------------------------------------------- */
+.badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+    .badge.bg-secondary {
+        background-color: #3a3020 !important;
+        color: #b8a070 !important;
+    }
+
+    .badge.bg-primary {
+        background-color: var(--dnd-accent) !important;
+        color: #f0e0cc !important;
+    }
+
+    .badge.bg-success {
+        background-color: #204820 !important;
+        color: #80c880 !important;
+    }
+
+    .badge.bg-info {
+        background-color: #183848 !important;
+        color: #70c0d8 !important;
+    }
+
+    .badge.bg-danger {
+        background-color: #5a1818 !important;
+        color: #f0b8b8 !important;
+    }
+
+/* -----------------------------------------------
+   Alerts
+----------------------------------------------- */
+.alert {
+    border-radius: 5px;
+    font-size: 0.92rem;
+    border: 1px solid;
+}
+
+.alert-info {
+    background-color: #14303c;
+    border-color: #1c5060;
+    color: #80c0d0;
+}
+
+.alert-success {
+    background-color: #142814;
+    border-color: #1e4820;
+    color: #70b870;
+}
+
+.alert-warning {
+    background-color: #2c2010;
+    border-color: #5a4010;
+    color: #c8a040;
+}
+
+.alert-danger {
+    background-color: #280e0e;
+    border-color: #5a1818;
+    color: #e07070;
+}
+
+/* -----------------------------------------------
+   Definition Lists (detail views)
+----------------------------------------------- */
+dt {
+    font-family: var(--dnd-font-display);
+    font-weight: 600;
+    color: var(--dnd-heading);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+dd {
+    font-size: 0.98rem;
+    margin-bottom: 0.5rem;
+    color: var(--dnd-text);
+}
+
+/* -----------------------------------------------
+   Dividers
+----------------------------------------------- */
+hr {
+    border-color: var(--dnd-border-accent);
+    opacity: 0.5;
+}
+
+/* -----------------------------------------------
+   Text utilities
+----------------------------------------------- */
+.text-muted {
+    color: var(--dnd-text-muted) !important;
+}
+
+.small, small {
+    color: var(--dnd-text-muted);
+}
+
+/* -----------------------------------------------
+   Page footer
+----------------------------------------------- */
+.site-footer {
+    border-top: 1px solid var(--dnd-border);
+    text-align: center;
+    padding: 1.2rem 0 1rem;
+    font-size: 0.82rem;
+    color: var(--dnd-text-muted);
+    letter-spacing: 0.03em;
+    margin-top: 2rem;
 }
