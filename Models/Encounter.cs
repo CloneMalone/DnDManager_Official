@@ -1,23 +1,23 @@
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 
 namespace DnDManager.Models
 {
     public class Encounter
     {
-        public int Id { get; set; }
+        public int EncounterId { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Name { get; set; } // Example: "Goblin Fight"
+        [StringLength(150)]
+        public string Name { get; set; } = string.Empty;
 
-        public string Outcome { get; set; } // Win / Loss / Escaped
+        public string? Description { get; set; }
 
-        //  Foreign Key → SessionLog
+        public string? Outcome { get; set; }
+
+        // Foreign key
         public int SessionLogId { get; set; }
-        public SessionLog SessionLog { get; set; }
+        public SessionLog? SessionLog { get; set; }
 
-        //  One Encounter has many LogEntries
         public List<LogEntry> LogEntries { get; set; } = new List<LogEntry>();
     }
 }
