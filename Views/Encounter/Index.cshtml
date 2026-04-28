@@ -1,54 +1,96 @@
-@model List<DnDManager.Models.Encounter>
+@model DnDManager.Models.LogEntry
 
 @{
-    ViewData["Title"] = "Encounters";
+    ViewData["Title"] = "Add Log Entry";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Encounters</h2>
-    <div>
-        <a asp-action="Create" asp-route-sessionLogId="@ViewBag.SessionLogId" class="btn btn-primary btn-sm">+ Add Encounter</a>
-        <a asp-controller="SessionLog" asp-action="Details" asp-route-id="@ViewBag.SessionLogId" class="btn btn-secondary btn-sm">Back to Session</a>
+<h2>Add Log Entry</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <input type="hidden" asp-for="EncounterId" value="@ViewBag.EncounterId" />
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="RoundNumber" class="form-label"></label>
+                    <input asp-for="RoundNumber" class="form-control" />
+                    <span asp-validation-for="RoundNumber" class="text-danger"></span>
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="TurnOrder" class="form-label"></label>
+                    <input asp-for="TurnOrder" class="form-control" />
+                    <span asp-validation-for="TurnOrder" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="ActorName" class="form-label"></label>
+                    <input asp-for="ActorName" class="form-control" />
+                    <span asp-validation-for="ActorName" class="text-danger"></span>
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="TargetName" class="form-label"></label>
+                    <input asp-for="TargetName" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ActionType" class="form-label"></label>
+                <select asp-for="ActionType" class="form-select">
+                    <option value="Attack">Attack</option>
+                    <option value="Spell">Spell</option>
+                    <option value="Heal">Heal</option>
+                    <option value="Move">Move</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ActionDescription" class="form-label"></label>
+                <textarea asp-for="ActionDescription" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="AttackRoll" class="form-label"></label>
+                    <input asp-for="AttackRoll" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="DamageDealt" class="form-label"></label>
+                    <input asp-for="DamageDealt" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="HealingDone" class="form-label"></label>
+                    <input asp-for="HealingDone" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="ConditionApplied" class="form-label"></label>
+                    <input asp-for="ConditionApplied" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="HpAfterAction" class="form-label"></label>
+                    <input asp-for="HpAfterAction" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Entry</button>
+            <a asp-controller="Encounter" asp-action="Details" asp-route-id="@ViewBag.EncounterId" class="btn btn-secondary">Cancel</a>
+        </form>
     </div>
 </div>
 
-@if (Model.Count == 0)
-{
-    <div class="alert alert-info">No encounters yet. Add one to start logging combat.</div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Outcome</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var enc in Model)
-                {
-                    <tr>
-                        <td><strong>@enc.Name</strong></td>
-                        <td>@enc.Description</td>
-                        <td>@enc.Outcome</td>
-                        <td class="text-end">
-                            <a asp-action="Details" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-info">View</a>
-                            <a asp-action="Edit" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-secondary">Edit</a>
-                            @using (Html.BeginForm("Delete", "Encounter", new { id = enc.EncounterId }, FormMethod.Post, null, new { style = "display:inline" }))
-                            {
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Delete this encounter and all its log entries?')">
-                                    Delete
-                                </button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
