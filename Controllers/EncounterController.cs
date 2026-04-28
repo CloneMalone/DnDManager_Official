@@ -13,96 +13,99 @@ namespace DnDManager.Controllers
             _context = context;
         }
 
-        // GET: Encounter
-public async Task<IActionResult> Index()
-{
-    var encounters = _context.Encounters.Include(e => e.SessionLog);
-    return View(await encounters.ToListAsync());
-}
+        // GET: /Encounter/Index?sessionLogId=1
+        public IActionResult Index(int sessionLogId)
+        {
+            List<Encounter> encounters = _context.Encounters
+                .Where(e => e.SessionLogId == sessionLogId)
+                .ToList();
 
-// GET: Encounter/Details/5
-public async Task<IActionResult> Details(int? id)
-{
-    if (id == null) return NotFound();
+            ViewBag.SessionLogId = sessionLogId;
+            return View(encounters);
+        }
 
-    var encounter = await _context.Encounters
-        .Include(e => e.LogEntries)
-        .FirstOrDefaultAsync(m => m.Id == id);
+        // GET: /Encounter/Details/1
+        public IActionResult Details(int id)
+        {
+            Encounter? encounter = _context.Encounters
+                .Include(e => e.LogEntries)
+                .Where(e => e.EncounterId == id)
+                .FirstOrDefault();
 
-    if (encounter == null) return NotFound();
+            if (encounter == null)
+            {
+                return NotFound();
+            }
 
-    return View(encounter);
-}
+            return View(encounter);
+        }
 
-// GET: Encounter/Create
-public IActionResult Create()
-{
-    return View();
-}
+        // GET: /Encounter/Create?sessionLogId=1
+        public IActionResult Create(int sessionLogId)
+        {
+            ViewBag.SessionLogId = sessionLogId;
+            return View();
+        }
 
-// POST: Encounter/Create
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(Encounter encounter)
-{
-    if (ModelState.IsValid)
-    {
-        _context.Add(encounter);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-    return View(encounter);
-}
+        // POST: /Encounter/Create
+        [HttpPost]
+        public IActionResult Create([Bind("Name,Description,Outcome,SessionLogId")] Encounter encounter)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.SessionLogId = encounter.SessionLogId;
+                return View(encounter);
+            }
 
-// GET: Encounter/Edit/5
-public async Task<IActionResult> Edit(int? id)
-{
-    if (id == null) return NotFound();
+            _context.Encounters.Add(encounter);
+            _context.SaveChanges();
 
-    var encounter = await _context.Encounters.FindAsync(id);
-    if (encounter == null) return NotFound();
+            return RedirectToAction("Index", new { sessionLogId = encounter.SessionLogId });
+        }
 
-    return View(encounter);
-}
+        // GET: /Encounter/Edit/1
+        public IActionResult Edit(int id)
+        {
+            Encounter? encounter = _context.Encounters.Find(id);
 
-// POST: Encounter/Edit/5
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Edit(int id, Encounter encounter)
-{
-    if (id != encounter.Id) return NotFound();
+            if (encounter == null)
+            {
+                return NotFound();
+            }
 
-    if (ModelState.IsValid)
-    {
-        _context.Update(encounter);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-    return View(encounter);
-}
+            return View(encounter);
+        }
 
-// GET: Encounter/Delete/5
-public async Task<IActionResult> Delete(int? id)
-{
-    if (id == null) return NotFound();
+        // POST: /Encounter/Edit/1
+        [HttpPost]
+        public IActionResult Edit([Bind("EncounterId,Name,Description,Outcome,SessionLogId")] Encounter encounter)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(encounter);
+            }
 
-    var encounter = await _context.Encounters
-        .FirstOrDefaultAsync(m => m.Id == id);
+            _context.Encounters.Update(encounter);
+            _context.SaveChanges();
 
-    if (encounter == null) return NotFound();
+            return RedirectToAction("Index", new { sessionLogId = encounter.SessionLogId });
+        }
 
-    return View(encounter);
-}
+        // POST: /Encounter/Delete/1
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            Encounter? encounter = _context.Encounters.Find(id);
 
-// POST: Encounter/Delete/5
-[HttpPost, ActionName("Delete")]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> DeleteConfirmed(int id)
-{
-    var encounter = await _context.Encounters.FindAsync(id);
-    _context.Encounters.Remove(encounter);
-    await _context.SaveChangesAsync();
-    return RedirectToAction(nameof(Index));
+            if (encounter != null)
+            {
+                int sessionLogId = encounter.SessionLogId;
+                _context.Encounters.Remove(encounter);
+                _context.SaveChanges();
+                return RedirectToAction("Index", new { sessionLogId = sessionLogId });
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
