@@ -1,6 +1,5 @@
 using DnDManager.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DnDManager.Controllers
 {
@@ -13,96 +12,98 @@ namespace DnDManager.Controllers
             _context = context;
         }
 
-           // GET: LogEntry
-public async Task<IActionResult> Index()
-{
-    var logEntries = _context.LogEntries.Include(l => l.Encounter);
-    return View(await logEntries.ToListAsync());
-}
+        // GET: /LogEntry/Index?encounterId=1
+        public IActionResult Index(int encounterId)
+        {
+            List<LogEntry> entries = _context.LogEntries
+                .Where(l => l.EncounterId == encounterId)
+                .OrderBy(l => l.RoundNumber)
+                .ThenBy(l => l.TurnOrder)
+                .ToList();
 
-// GET: LogEntry/Details/5
-public async Task<IActionResult> Details(int? id)
-{
-    if (id == null) return NotFound();
+            ViewBag.EncounterId = encounterId;
+            return View(entries);
+        }
 
-    var logEntry = await _context.LogEntries
-        .Include(l => l.Encounter)
-        .FirstOrDefaultAsync(m => m.Id == id);
+        // GET: /LogEntry/Details/1
+        public IActionResult Details(int id)
+        {
+            LogEntry? entry = _context.LogEntries.Find(id);
 
-    if (logEntry == null) return NotFound();
+            if (entry == null)
+            {
+                return NotFound();
+            }
 
-    return View(logEntry);
-}
+            return View(entry);
+        }
 
-// GET: LogEntry/Create
-public IActionResult Create()
-{
-    return View();
-}
+        // GET: /LogEntry/Create?encounterId=1
+        public IActionResult Create(int encounterId)
+        {
+            ViewBag.EncounterId = encounterId;
+            return View();
+        }
 
-// POST: LogEntry/Create
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(LogEntry logEntry)
-{
-    if (ModelState.IsValid)
-    {
-        _context.Add(logEntry);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-    return View(logEntry);
-}
+        // POST: /LogEntry/Create
+        [HttpPost]
+        public IActionResult Create([Bind("RoundNumber,TurnOrder,ActorName,TargetName,ActionType,ActionDescription,AttackRoll,DamageDealt,HealingDone,ConditionApplied,HpAfterAction,Notes,EncounterId")] LogEntry entry)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.EncounterId = entry.EncounterId;
+                return View(entry);
+            }
 
-// GET: LogEntry/Edit/5
-public async Task<IActionResult> Edit(int? id)
-{
-    if (id == null) return NotFound();
+            _context.LogEntries.Add(entry);
+            _context.SaveChanges();
 
-    var logEntry = await _context.LogEntries.FindAsync(id);
-    if (logEntry == null) return NotFound();
+            return RedirectToAction("Details", "Encounter", new { id = entry.EncounterId });
+        }
 
-    return View(logEntry);
-}
+        // GET: /LogEntry/Edit/1
+        public IActionResult Edit(int id)
+        {
+            LogEntry? entry = _context.LogEntries.Find(id);
 
-// POST: LogEntry/Edit/5
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Edit(int id, LogEntry logEntry)
-{
-    if (id != logEntry.Id) return NotFound();
+            if (entry == null)
+            {
+                return NotFound();
+            }
 
-    if (ModelState.IsValid)
-    {
-        _context.Update(logEntry);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-    return View(logEntry);
-}
+            return View(entry);
+        }
 
-// GET: LogEntry/Delete/5
-public async Task<IActionResult> Delete(int? id)
-{
-    if (id == null) return NotFound();
+        // POST: /LogEntry/Edit/1
+        [HttpPost]
+        public IActionResult Edit([Bind("LogEntryId,RoundNumber,TurnOrder,ActorName,TargetName,ActionType,ActionDescription,AttackRoll,DamageDealt,HealingDone,ConditionApplied,HpAfterAction,Notes,EncounterId")] LogEntry entry)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(entry);
+            }
 
-    var logEntry = await _context.LogEntries
-        .FirstOrDefaultAsync(m => m.Id == id);
+            _context.LogEntries.Update(entry);
+            _context.SaveChanges();
 
-    if (logEntry == null) return NotFound();
+            return RedirectToAction("Details", "Encounter", new { id = entry.EncounterId });
+        }
 
-    return View(logEntry);
-}
+        // POST: /LogEntry/Delete/1
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            LogEntry? entry = _context.LogEntries.Find(id);
 
-// POST: LogEntry/Delete/5
-[HttpPost, ActionName("Delete")]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> DeleteConfirmed(int id)
-{
-    var logEntry = await _context.LogEntries.FindAsync(id);
-    _context.LogEntries.Remove(logEntry);
-    await _context.SaveChangesAsync();
-    return RedirectToAction(nameof(Index));
-}
+            if (entry != null)
+            {
+                int encounterId = entry.EncounterId;
+                _context.LogEntries.Remove(entry);
+                _context.SaveChanges();
+                return RedirectToAction("Details", "Encounter", new { id = encounterId });
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
