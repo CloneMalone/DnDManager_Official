@@ -1,6 +1,130 @@
-﻿@{
+@{
     ViewData["Title"] = "About";
 }
 
-<h2>About</h2>
-<p>Coming soon.</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">About D&amp;D Manager</h2>
+</div>
+
+<p class="text-muted mb-4">Your friendly companion for keeping campaigns organized, characters tracked, and chaos (mostly) under control.</p>
+
+<hr />
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><strong>What Is This Thing?</strong></div>
+            <div class="card-body">
+                <p>
+                    D&amp;D Manager is a web app built to take the paperwork out of your tabletop sessions so you can
+                    focus on the fun stuff, like arguing over whether the bard can fight the dragon.
+                </p>
+                <p class="mb-0">
+                    It keeps all of your campaign info in one spot: characters, session notes, encounters, and
+                    combat tracking. No more digging through a pile of index cards or squinting at a spreadsheet
+                    that looks like it was designed by a chaotic neutral wizard.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><strong>Who Is It For?</strong></div>
+            <div class="card-body">
+                <p>
+                    Mostly Dungeon Masters, but honestly anyone at the table can benefit from having a clean
+                    record of what happened three sessions ago when the party accidentally burned down the tavern.
+                </p>
+                <p class="mb-0">
+                    If you run multiple campaigns (you overachiever), the app handles those too. Each campaign
+                    gets its own little world of characters, logs, and encounters completely separate from the rest.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h4 class="mb-3">What You Can Do</h4>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-header"><strong>Campaigns</strong></div>
+            <div class="card-body">
+                <p class="small mb-0">
+                    Create and manage campaigns, keep track of who the DM is, and store a description
+                    so everyone remembers what the whole adventure is actually about.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-header"><strong>Characters</strong></div>
+            <div class="card-body">
+                <p class="small mb-0">
+                    Track every character in the party: their class, race, level, HP, and AC.
+                    Great for when someone insists their fighter has more HP than they actually do.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-header"><strong>Session Logs</strong></div>
+            <div class="card-body">
+                <p class="small mb-0">
+                    Log each session with a title, date, and a summary of what went down.
+                    You can also attach individual log entries for more granular notes
+                    (or for calling out that one player who was on their phone the whole time).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card h-100">
+            <div class="card-header"><strong>Combat Tracker</strong></div>
+            <div class="card-body">
+                <p class="small mb-0">
+                    Add combatants with initiative, HP, and AC to keep fights moving.
+                    Way better than trying to track everyone on a whiteboard while also narrating
+                    a dragon monologue.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h4 class="mb-3">How It Works</h4>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <ol class="mb-0">
+            <li class="mb-2"><strong>Start a Campaign.</strong> Head to the Campaigns page and hit <em>New Campaign</em>. Give it a name, drop in the DM's name, and add a quick description if you want.</li>
+            <li class="mb-2"><strong>Add Characters.</strong> Inside your campaign, add the party members. Fill in their stats so you have a handy reference during play.</li>
+            <li class="mb-2"><strong>Log Your Sessions.</strong> After each session, create a session log with a summary. Add log entries for specific moments worth remembering.</li>
+            <li class="mb-2"><strong>Run Encounters.</strong> Set up encounters and add combatants to keep initiative and HP organized during fights.</li>
+            <li class="mb-0"><strong>Come Back Next Week.</strong> Everything is saved and waiting for you. Just pick up where you left off.</li>
+        </ol>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><strong>A Note on This Project</strong></div>
+    <div class="card-body">
+        <p class="mb-0">
+            This app was built as a course project for CIS-293 Advanced Technologies at Southeast Tech.
+            It uses ASP.NET Core MVC with Entity Framework Core and SQL Server on the backend,
+            and Bootstrap 5 on the frontend. It is a work in progress, so if something breaks, well,
+            the dice were just not in your favor today.
+        </p>
+    </div>
+</div>
