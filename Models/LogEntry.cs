@@ -4,21 +4,55 @@ namespace DnDManager.Models
 {
     public class LogEntry
     {
-        public int Id { get; set; }
+        public int LogEntryId { get; set; }
+
+        [Required]
+        [Range(1, 999)]
+        [Display(Name = "Round #")]
+        public int RoundNumber { get; set; }
+
+        [Required]
+        [Range(1, 999)]
+        [Display(Name = "Turn Order")]
+        public int TurnOrder { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        [Display(Name = "Actor")]
+        public string ActorName { get; set; } = string.Empty;
+
+        [StringLength(100)]
+        [Display(Name = "Target")]
+        public string? TargetName { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string Action { get; set; } // Attack, Heal, Spell, etc.
+        [Display(Name = "Action Type")]
+        public string ActionType { get; set; } = "Other";
 
-        [Required]
-        [StringLength(255)]
-        public string Description { get; set; } 
-        // Example: "Rolled 18, dealt 7 damage"
+        [Display(Name = "Description")]
+        public string? ActionDescription { get; set; }
 
-        public int RoundNumber { get; set; } // Optional but VERY useful
+        [Display(Name = "Attack Roll")]
+        public int? AttackRoll { get; set; }
 
-        // 🔗 Foreign Key → Encounter
+        [Display(Name = "Damage Dealt")]
+        public int? DamageDealt { get; set; }
+
+        [Display(Name = "Healing Done")]
+        public int? HealingDone { get; set; }
+
+        [StringLength(100)]
+        [Display(Name = "Condition Applied")]
+        public string? ConditionApplied { get; set; }
+
+        [Display(Name = "HP After Action")]
+        public int? HpAfterAction { get; set; }
+
+        public string? Notes { get; set; }
+
+        // Foreign key
         public int EncounterId { get; set; }
-        public Encounter Encounter { get; set; }
+        public Encounter? Encounter { get; set; }
     }
 }
