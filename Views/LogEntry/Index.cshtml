@@ -1,31 +1,64 @@
-@model IEnumerable<DnDManager.Models.LogEntry>
+@model List<DnDManager.Models.LogEntry>
 
-<h2>Log Entries</h2>
+@{
+    ViewData["Title"] = "Log Entries";
+}
 
-<a asp-action="Create">Create New</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Log Entries</h2>
+    <div>
+        <a asp-action="Create" asp-route-encounterId="@ViewBag.EncounterId" class="btn btn-primary btn-sm">+ Add Entry</a>
+        <a asp-controller="Encounter" asp-action="Details" asp-route-id="@ViewBag.EncounterId" class="btn btn-secondary btn-sm">Back to Encounter</a>
+    </div>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Action</th>
-            <th>Description</th>
-            <th>Encounter ID</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Action</td>
-                <td>@item.Description</td>
-                <td>@item.EncounterId</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No log entries yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Rnd</th>
+                    <th>Turn</th>
+                    <th>Actor</th>
+                    <th>Target</th>
+                    <th>Action</th>
+                    <th>Roll</th>
+                    <th>Dmg</th>
+                    <th>Heal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model)
+                {
+                    <tr>
+                        <td>@entry.RoundNumber</td>
+                        <td>@entry.TurnOrder</td>
+                        <td><strong>@entry.ActorName</strong></td>
+                        <td>@entry.TargetName</td>
+                        <td>@entry.ActionType</td>
+                        <td>@entry.AttackRoll</td>
+                        <td>@entry.DamageDealt</td>
+                        <td>@entry.HealingDone</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@entry.LogEntryId" class="btn btn-sm btn-info">View</a>
+                            <a asp-action="Edit" asp-route-id="@entry.LogEntryId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "LogEntry", new { id = entry.LogEntryId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this log entry?')">
+                                    Delete
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
