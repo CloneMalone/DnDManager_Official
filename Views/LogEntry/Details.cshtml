@@ -1,14 +1,49 @@
 @model DnDManager.Models.LogEntry
 
-<h2>Log Entry Details</h2>
+@{
+    ViewData["Title"] = "Log Entry Details";
+}
 
-<div>
-    <p><strong>Action:</strong> @Model.Action</p>
-    <p><strong>Description:</strong> @Model.Description</p>
-    <p><strong>Encounter ID:</strong> @Model.EncounterId</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Round @Model.RoundNumber, Turn @Model.TurnOrder</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.LogEntryId" class="btn btn-secondary btn-sm">Edit</a>
+        <a asp-controller="Encounter" asp-action="Details" asp-route-id="@Model.EncounterId" class="btn btn-outline-secondary btn-sm">Back to Encounter</a>
+    </div>
 </div>
 
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</p>
+<div class="card">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Actor</dt>
+            <dd class="col-sm-9"><strong>@Model.ActorName</strong></dd>
+
+            <dt class="col-sm-3">Target</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.TargetName) ? "—" : Model.TargetName)</dd>
+
+            <dt class="col-sm-3">Action Type</dt>
+            <dd class="col-sm-9"><span class="badge bg-primary">@Model.ActionType</span></dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.ActionDescription</dd>
+
+            <dt class="col-sm-3">Attack Roll</dt>
+            <dd class="col-sm-9">@(Model.AttackRoll.HasValue ? Model.AttackRoll.ToString() : "—")</dd>
+
+            <dt class="col-sm-3">Damage Dealt</dt>
+            <dd class="col-sm-9">@(Model.DamageDealt.HasValue ? Model.DamageDealt.ToString() : "—")</dd>
+
+            <dt class="col-sm-3">Healing Done</dt>
+            <dd class="col-sm-9">@(Model.HealingDone.HasValue ? Model.HealingDone.ToString() : "—")</dd>
+
+            <dt class="col-sm-3">Condition Applied</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.ConditionApplied) ? "—" : Model.ConditionApplied)</dd>
+
+            <dt class="col-sm-3">HP After Action</dt>
+            <dd class="col-sm-9">@(Model.HpAfterAction.HasValue ? Model.HpAfterAction.ToString() : "—")</dd>
+
+            <dt class="col-sm-3">Notes</dt>
+            <dd class="col-sm-9">@Model.Notes</dd>
+        </dl>
+    </div>
+</div>
