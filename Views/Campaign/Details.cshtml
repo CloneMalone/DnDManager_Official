@@ -1,6 +1,28 @@
+@model DnDManager.Models.Campaign
+
 @{
-    ViewData["Title"] = "Campaigns";
+    ViewData["Title"] = "Campaign Details";
 }
 
-<h2>Campaigns</h2>
-<p>Coming soon.</p>
+<h1>Campaign Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">@Model.Name</h3>
+
+        <p>
+            <strong>Description:</strong><br />
+            @Model.Description
+        </p>
+
+        <p>
+            <strong>Dungeon Master:</strong><br />
+            @Model.DmName
+        </p>
+    </div>
+</div>
+
+<br />
+
+<a asp-action="Edit" asp-route-id="@Model.CampaignId" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
