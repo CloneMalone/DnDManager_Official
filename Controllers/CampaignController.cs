@@ -1,21 +1,117 @@
 using DnDManager.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DnDManager.Controllers
 {
     public class CampaignController : Controller
     {
-        // private readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
-        //public CampaignController(AppDbContext context)
-        //{
-        //    _context = context;
-        //}
-
-        // Actions go here
-        public IActionResult Index()
+        public CampaignController(AppDbContext context)
         {
-            return View("Index");
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var campaigns = await _context.Campaigns
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            return View(campaigns);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var campaign = await _context.Campaigns
+                .FirstOrDefaultAsync(c => c.CampaignId == id);
+
+            if (campaign == null)
+                return NotFound();
+
+            return View(campaign);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Campaign campaign)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Campaigns.Add(campaign);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(campaign);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var campaign = await _context.Campaigns.FindAsync(id);
+
+            if (campaign == null)
+                return NotFound();
+
+            return View(campaign);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Campaign campaign)
+        {
+            if (id != campaign.CampaignId)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(campaign);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(campaign);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var campaign = await _context.Campaigns
+                .FirstOrDefaultAsync(c => c.CampaignId == id);
+
+            if (campaign == null)
+                return NotFound();
+
+            return View(campaign);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var campaign = await _context.Campaigns.FindAsync(id);
+
+            if (campaign != null)
+            {
+                _context.Campaigns.Remove(campaign);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
