@@ -1,5 +1,6 @@
 using DnDManager.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DnDManager.Controllers
 {
@@ -12,19 +13,61 @@ namespace DnDManager.Controllers
             _context = context;
         }
 
-        // Actions go here
-        
-        // GET: api/character
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Character>>> GetCharacters()
+        // GET: Character
+        public async Task<IActionResult> Index()
         {
-            return await _context.Set<Character>().ToListAsync();
+            var characters = await _context.Set<Character>().ToListAsync();
+            return View(characters);
         }
 
-        // GET: api/character/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Character>> GetCharacter(int id)
+        // GET: Character/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var character = await _context.Set<Character>()
+                .FirstOrDefaultAsync(c => c.CharacterId == id);
+
+            if (character == null)
+            {
+                return NotFound();
+            }
+
+            return View(character);
+        }
+
+        // GET: Character/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Character/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Character character)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(character);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(character);
+        }
+
+        // GET: Character/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var character = await _context.Set<Character>().FindAsync(id);
 
             if (character == null)
@@ -32,66 +75,49 @@ namespace DnDManager.Controllers
                 return NotFound();
             }
 
-            return character;
+            return View(character);
         }
 
-        // POST: api/character
+        // POST: Character/Edit/5
         [HttpPost]
-        public async Task<ActionResult<Character>> CreateCharacter(Character character)
-        {
-            _context.Set<Character>().Add(character);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetCharacter),
-                new { id = character.CharacterId },
-                character
-            );
-        }
-
-        // PUT: api/character/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCharacter(int id, Character character)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Character character)
         {
             if (id != character.CharacterId)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(character).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Set<Character>().Any(c => c.CharacterId == id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/character/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCharacter(int id)
-        {
-            var character = await _context.Set<Character>().FindAsync(id);
-
-            if (character == null)
-            {
                 return NotFound();
             }
 
-            _context.Set<Character>().Remove(character);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(character);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CharacterExists(character.CharacterId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
-            return NoContent();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(character);
         }
 
+        // (Optional but recommended later)
+        private bool CharacterExists(int id)
+        {
+            return _context.Set<Character>()
+                .Any(c => c.CharacterId == id);
+        }
     }
 }
