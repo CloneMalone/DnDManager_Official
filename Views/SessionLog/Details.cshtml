@@ -1,6 +1,75 @@
+@model DnDManager.Models.SessionLog
+
 @{
-    ViewData["Title"] = "Session Logs";
+    ViewData["Title"] = Model.Title;
 }
 
-<h2>Session Logs</h2>
-<p>Coming soon.</p>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <h2 class="mb-0">Session @Model.SessionNumber – @Model.Title</h2>
+        <p class="text-muted mb-0">@Model.SessionDate.ToLongDateString()</p>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.SessionLogId" class="btn btn-secondary btn-sm">Edit</a>
+        <a asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-outline-secondary btn-sm">Back to Sessions</a>
+    </div>
+</div>
+
+<hr />
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Summary</div>
+            <div class="card-body"><p class="mb-0">@(string.IsNullOrEmpty(Model.Summary) ? "No summary recorded." : Model.Summary)</p></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Notes</div>
+            <div class="card-body"><p class="mb-0">@(string.IsNullOrEmpty(Model.Notes) ? "No notes." : Model.Notes)</p></div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.MajorOutcome))
+{
+    <div class="alert alert-success"><strong>Major Outcome:</strong> @Model.MajorOutcome</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h4 class="mb-0">Encounters <span class="badge bg-secondary">@Model.Encounters.Count</span></h4>
+    <a asp-controller="Encounter" asp-action="Create" asp-route-sessionLogId="@Model.SessionLogId" class="btn btn-success btn-sm">+ Add Encounter</a>
+</div>
+
+@if (Model.Encounters.Count == 0)
+{
+    <p class="text-muted">No encounters for this session yet.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Name</th>
+                    <th>Outcome</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enc in Model.Encounters)
+                {
+                    <tr>
+                        <td><strong>@enc.Name</strong></td>
+                        <td>@enc.Outcome</td>
+                        <td class="text-end">
+                            <a asp-controller="Encounter" asp-action="Details" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-info">View</a>
+                            <a asp-controller="Encounter" asp-action="Edit" asp-route-id="@enc.EncounterId" class="btn btn-sm btn-secondary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
