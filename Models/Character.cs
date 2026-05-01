@@ -4,40 +4,44 @@ namespace DnDManager.Models
 {
     public class Character
     {
-        // Properties go here
-        [Key]
-public int CharacterId { get; set; }   // Primary Key
+        public int CharacterId { get; set; }
 
-[Required]
-public int CampaignId { get; set; }    // Foreign Key
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; } = string.Empty;
 
-[Required]
-[MaxLength(100)]
-public string Name { get; set; } = string.Empty;
+        [StringLength(50)]
+        public string? Class { get; set; }
 
-[Required]
-[MaxLength(50)]
-public string Class { get; set; } = string.Empty;
+        [StringLength(50)]
+        public string? Race { get; set; }
 
-[Required]
-[MaxLength(50)]
-public string Race { get; set; } = string.Empty;
+        [Range(1, 20)]
+        public int Level { get; set; } = 1;
 
-[Range(1, 20)]
-public int Level { get; set; }
+        [Required]
+        [Range(1, 999)]
+        [Display(Name = "Max HP")]
+        public int MaxHP { get; set; }
 
-[Range(0, int.MaxValue)]
-public int CurrentHp { get; set; }
+        [Required]
+        [Range(0, 999)]
+        [Display(Name = "Current HP")]
+        public int CurrentHP { get; set; }
 
-[Range(1, int.MaxValue)]
-public int MaxHp { get; set; }
+        [Range(0, 30)]
+        [Display(Name = "Armor Class")]
+        public int AC { get; set; }
 
-[Range(0, 50)]
-public int ArmorClass { get; set; }
+        [Range(-10, 20)]
+        [Display(Name = "Initiative Bonus")]
+        public int InitiativeBonus { get; set; }
 
-public int InitiativeBonus { get; set; }
+        [StringLength(50)]
+        public string? Status { get; set; } = "Active";
 
-[MaxLength(100)]
-public string? Status { get; set; }
+        // Foreign key
+        public int CampaignId { get; set; }
+        public Campaign? Campaign { get; set; }
     }
 }
