@@ -1,37 +1,51 @@
-@model IEnumerable<DnDManager.Models.Campaign>
+@model List<DnDManager.Models.Campaign>
 
 @{
     ViewData["Title"] = "Campaigns";
 }
 
-<h1>Campaigns</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Campaigns</h2>
+    <a asp-action="Create" class="btn btn-primary">+ New Campaign</a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Campaign</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Dungeon Master</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var campaign in Model)
-        {
-            <tr>
-                <td>@campaign.Name</td>
-                <td>@campaign.Description</td>
-                <td>@campaign.DmName</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@campaign.CampaignId">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@campaign.CampaignId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@campaign.CampaignId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No campaigns yet. Create one to get started.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Dungeon Master</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var campaign in Model)
+                {
+                    <tr>
+                        <td><strong>@campaign.Name</strong></td>
+                        <td>@campaign.DmName</td>
+                        <td>@campaign.Description</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@campaign.CampaignId" class="btn btn-sm btn-info">View</a>
+                            <a asp-action="Edit" asp-route-id="@campaign.CampaignId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "Campaign", new { id = campaign.CampaignId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this campaign and all its data?')">
+                                    Delete
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
