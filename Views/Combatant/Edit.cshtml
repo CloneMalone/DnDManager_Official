@@ -1,6 +1,68 @@
+@model DnDManager.Models.Combatant
+
 @{
-    ViewData["Title"] = "Combat Tracker";
+    ViewData["Title"] = "Edit Combatant";
 }
 
-<h2>Combat Tracker</h2>
-<p>Coming soon.</p>
+<h2>Edit Combatant</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <input type="hidden" asp-for="CombatantId" />
+            <input type="hidden" asp-for="CampaignId" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Type" class="form-label"></label>
+                <select asp-for="Type" class="form-select">
+                    <option value="Enemy">Enemy</option>
+                    <option value="Player">Player</option>
+                    <option value="NPC">NPC</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="MaxHP" class="form-label"></label>
+                    <input asp-for="MaxHP" class="form-control" />
+                    <span asp-validation-for="MaxHP" class="text-danger"></span>
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="CurrentHP" class="form-label"></label>
+                    <input asp-for="CurrentHP" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="ArmorClass" class="form-label"></label>
+                    <input asp-for="ArmorClass" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="Initiative" class="form-label"></label>
+                    <input asp-for="Initiative" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="IsDefeated" class="form-check-input" />
+                <label asp-for="IsDefeated" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
