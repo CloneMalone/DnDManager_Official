@@ -4,58 +4,78 @@
     ViewData["Title"] = "Edit Character";
 }
 
-<h1>Edit Character</h1>
+<h2>Edit Character</h2>
 
-Edit <form>
-    <input type="hidden" asp-for="CharacterId" />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
+            <input type="hidden" asp-for="CharacterId" />
+            <input type="hidden" asp-for="CampaignId" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="Class" class="form-label"></label>
+                    <input asp-for="Class" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="Race" class="form-label"></label>
+                    <input asp-for="Race" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="Level" class="form-label"></label>
+                    <input asp-for="Level" class="form-control" />
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="AC" class="form-label"></label>
+                    <input asp-for="AC" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="MaxHP" class="form-label"></label>
+                    <input asp-for="MaxHP" class="form-control" />
+                    <span asp-validation-for="MaxHP" class="text-danger"></span>
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="CurrentHP" class="form-label"></label>
+                    <input asp-for="CurrentHP" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label asp-for="InitiativeBonus" class="form-label"></label>
+                    <input asp-for="InitiativeBonus" class="form-control" />
+                </div>
+                <div class="col mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="Active">Active</option>
+                        <option value="Unconscious">Unconscious</option>
+                        <option value="Dead">Dead</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-secondary">Cancel</a>
+        </form>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Class"></label>
-        <input asp-for="Class" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Race"></label>
-        <input asp-for="Race" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Level"></label>
-        <input asp-for="Level" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CurrentHp"></label>
-        <input asp-for="CurrentHp" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="MaxHp"></label>
-        <input asp-for="MaxHp" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ArmorClass"></label>
-        <input asp-for="ArmorClass" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="InitiativeBonus"></label>
-        <input asp-for="InitiativeBonus" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Status"></label>
-        <input asp-for="Status" class="form-control" />
-    </div>
-
-    <br />
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a>IndexCancel</a>
-</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
