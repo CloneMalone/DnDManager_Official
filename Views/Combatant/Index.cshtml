@@ -1,6 +1,79 @@
+@model List<DnDManager.Models.Combatant>
+
 @{
     ViewData["Title"] = "Combat Tracker";
 }
 
-<h2>Combat Tracker</h2>
-<p>Coming soon.</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Combat Tracker</h2>
+    <div>
+        <a asp-action="Create" asp-route-campaignId="@ViewBag.CampaignId" class="btn btn-primary btn-sm">+ Add Combatant</a>
+        <a asp-controller="Campaign" asp-action="Details" asp-route-id="@ViewBag.CampaignId" class="btn btn-secondary btn-sm">Back to Campaign</a>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No combatants yet. Add some to start tracking.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Init</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>HP</th>
+                    <th>AC</th>
+                    <th>Status</th>
+                    <th>Set HP</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var combatant in Model)
+                {
+                    <tr class="@(combatant.IsDefeated ? "table-secondary text-muted" : "")">
+                        <td><strong>@combatant.Initiative</strong></td>
+                        <td>@combatant.Name</td>
+                        <td>@combatant.Type</td>
+                        <td>@combatant.CurrentHP / @combatant.MaxHP</td>
+                        <td>@combatant.ArmorClass</td>
+                        <td>
+                            <span class="badge @(combatant.IsDefeated ? "bg-danger" : "bg-success")">
+                                @(combatant.IsDefeated ? "Defeated" : "Active")
+                            </span>
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("UpdateHP", "Combatant", null, FormMethod.Post, null, new { @class = "d-flex gap-1" }))
+                            {
+                                <input type="hidden" name="combatantId" value="@combatant.CombatantId" />
+                                <input type="number" name="newHP" value="@combatant.CurrentHP"
+                                       min="0" max="@combatant.MaxHP" class="form-control form-control-sm" style="width:75px" />
+                                <button type="submit" class="btn btn-sm btn-warning">Set</button>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @using (Html.BeginForm("ToggleDefeated", "Combatant", new { id = combatant.CombatantId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    @(combatant.IsDefeated ? "Revive" : "Defeat")
+                                </button>
+                            }
+                            <a asp-action="Edit" asp-route-id="@combatant.CombatantId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "Combatant", new { id = combatant.CombatantId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Remove this combatant?')">
+                                    Remove
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
