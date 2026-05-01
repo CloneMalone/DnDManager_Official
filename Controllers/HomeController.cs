@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DnDManager.Controllers
 {
     public class HomeController : Controller
     {
-        // Actions go here
+        // GET: /Home/About
+        public IActionResult About()
+        {
+            ViewData["Title"] = "About";
+            return View();
+        }
     }
 }
