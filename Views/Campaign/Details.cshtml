@@ -1,28 +1,94 @@
 @model DnDManager.Models.Campaign
 
 @{
-    ViewData["Title"] = "Campaign Details";
+    ViewData["Title"] = Model.Name;
 }
 
-<h1>Campaign Details</h1>
-
-<div class="card">
-    <div class="card-body">
-        <h3 class="card-title">@Model.Name</h3>
-
-        <p>
-            <strong>Description:</strong><br />
-            @Model.Description
-        </p>
-
-        <p>
-            <strong>Dungeon Master:</strong><br />
-            @Model.DmName
-        </p>
+<div class="d-flex justify-content-between align-items-start mb-2">
+    <div>
+        <h2 class="mb-0">@Model.Name</h2>
+        @if (!string.IsNullOrEmpty(Model.DmName))
+        {
+            <p class="text-muted mb-1">DM: @Model.DmName</p>
+        }
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <p>@Model.Description</p>
+        }
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.CampaignId" class="btn btn-outline-secondary btn-sm">Edit Campaign</a>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Back to Campaigns</a>
     </div>
 </div>
 
-<br />
+<hr />
 
-<a asp-action="Edit" asp-route-id="@Model.CampaignId" class="btn btn-primary">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header"><strong>Characters</strong> <span class="badge bg-secondary">@Model.Characters.Count</span></div>
+            <div class="card-body">
+                @if (Model.Characters.Count == 0)
+                {
+                    <p class="text-muted small">No characters yet.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-2">
+                        @foreach (var c in Model.Characters)
+                        {
+                            <li><a asp-controller="Character" asp-action="Details" asp-route-id="@c.CharacterId">@c.Name</a> — @c.Class, Level @c.Level</li>
+                        }
+                    </ul>
+                }
+                <a asp-controller="Character" asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-primary me-1">View All</a>
+                <a asp-controller="Character" asp-action="Create" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-success">+ Add</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header"><strong>Session Logs</strong> <span class="badge bg-secondary">@Model.SessionLogs.Count</span></div>
+            <div class="card-body">
+                @if (Model.SessionLogs.Count == 0)
+                {
+                    <p class="text-muted small">No sessions logged yet.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-2">
+                        @foreach (var s in Model.SessionLogs.OrderByDescending(x => x.SessionDate).Take(5))
+                        {
+                            <li><a asp-controller="SessionLog" asp-action="Details" asp-route-id="@s.SessionLogId">Session @s.SessionNumber – @s.Title</a></li>
+                        }
+                    </ul>
+                }
+                <a asp-controller="SessionLog" asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-primary me-1">View All</a>
+                <a asp-controller="SessionLog" asp-action="Create" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-success">+ Log Session</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header"><strong>Combat Tracker</strong> <span class="badge bg-secondary">@Model.Combatants.Count</span></div>
+            <div class="card-body">
+                @if (Model.Combatants.Count == 0)
+                {
+                    <p class="text-muted small">No combatants added yet.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-2">
+                        @foreach (var cb in Model.Combatants.OrderByDescending(x => x.Initiative).Take(5))
+                        {
+                            <li>@cb.Name <span class="badge @(cb.IsDefeated ? "bg-danger" : "bg-success")">@(cb.IsDefeated ? "Defeated" : "Active")</span></li>
+                        }
+                    </ul>
+                }
+                <a asp-controller="Combatant" asp-action="Index" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-primary me-1">Tracker</a>
+                <a asp-controller="Combatant" asp-action="Create" asp-route-campaignId="@Model.CampaignId" class="btn btn-sm btn-outline-success">+ Add</a>
+            </div>
+        </div>
+    </div>
+</div>
