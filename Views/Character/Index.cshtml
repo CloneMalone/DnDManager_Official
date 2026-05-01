@@ -1,42 +1,64 @@
-@model IEnumerable<DnDManager.Models.Character>
+@model List<DnDManager.Models.Character>
 
 @{
     ViewData["Title"] = "Characters";
 }
 
-<h1>Characters</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Characters</h2>
+    <div>
+        <a asp-action="Create" asp-route-campaignId="@ViewBag.CampaignId" class="btn btn-primary btn-sm">+ Add Character</a>
+        <a asp-controller="Campaign" asp-action="Details" asp-route-id="@ViewBag.CampaignId" class="btn btn-secondary btn-sm">Back to Campaign</a>
+    </div>
+</div>
 
-<p>
-    <a>CreateCreate New Character</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Class</th>
-            <th>Race</th>
-            <th>Level</th>
-            <th>HP</th>
-            <th>AC</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
+@if (Model.Count == 0)
 {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Class</td>
-            <td>@item.Race</td>
-            <td>@item.Level</td>
-            <td>@item.CurrentHp / @item.MaxHp</td>
-            <td>@item.ArmorClass</td>
-            <td>
-               <a> Details</a> |
-              <a> Edit</a>
-            </td>
-        </tr>
+    <div class="alert alert-info">No characters yet.</div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Race</th>
+                    <th>Level</th>
+                    <th>HP</th>
+                    <th>AC</th>
+                    <th>Initiative</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var character in Model)
+                {
+                    <tr>
+                        <td><strong>@character.Name</strong></td>
+                        <td>@character.Class</td>
+                        <td>@character.Race</td>
+                        <td>@character.Level</td>
+                        <td>@character.CurrentHP / @character.MaxHP</td>
+                        <td>@character.AC</td>
+                        <td>@(character.InitiativeBonus >= 0 ? "+" : "")@character.InitiativeBonus</td>
+                        <td><span class="badge @(character.Status == "Active" ? "bg-success" : character.Status == "Unconscious" ? "bg-warning text-dark" : "bg-danger")">@character.Status</span></td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@character.CharacterId" class="btn btn-sm btn-info">View</a>
+                            <a asp-action="Edit" asp-route-id="@character.CharacterId" class="btn btn-sm btn-secondary">Edit</a>
+                            @using (Html.BeginForm("Delete", "Character", new { id = character.CharacterId }, FormMethod.Post, null, new { style = "display:inline" }))
+                            {
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this character?')">
+                                    Delete
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
