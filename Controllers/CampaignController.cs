@@ -13,105 +13,93 @@ namespace DnDManager.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // GET: /Campaign
+        public IActionResult Index()
         {
-            var campaigns = await _context.Campaigns
-                .OrderBy(c => c.Name)
-                .ToListAsync();
-
+            List<Campaign> campaigns = _context.Campaigns.ToList();
             return View(campaigns);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        // GET: /Campaign/Details/1
+        public IActionResult Details(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var campaign = await _context.Campaigns
-                .FirstOrDefaultAsync(c => c.CampaignId == id);
+            Campaign? campaign = _context.Campaigns
+                .Include(c => c.Characters)
+                .Include(c => c.SessionLogs)
+                .Include(c => c.Combatants)
+                .Where(c => c.CampaignId == id)
+                .FirstOrDefault();
 
             if (campaign == null)
+            {
                 return NotFound();
+            }
 
             return View(campaign);
         }
 
+        // GET: /Campaign/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: /Campaign/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Campaign campaign)
+        public IActionResult Create([Bind("Name,Description,DmName")] Campaign campaign)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Campaigns.Add(campaign);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(campaign);
+            }
+
+            _context.Campaigns.Add(campaign);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Campaign/Edit/1
+        public IActionResult Edit(int id)
+        {
+            Campaign? campaign = _context.Campaigns.Find(id);
+
+            if (campaign == null)
+            {
+                return NotFound();
             }
 
             return View(campaign);
         }
 
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var campaign = await _context.Campaigns.FindAsync(id);
-
-            if (campaign == null)
-                return NotFound();
-
-            return View(campaign);
-        }
-
+        // POST: /Campaign/Edit/1
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Campaign campaign)
+        public IActionResult Edit([Bind("CampaignId,Name,Description,DmName")] Campaign campaign)
         {
-            if (id != campaign.CampaignId)
-                return NotFound();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Update(campaign);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(campaign);
             }
 
-            return View(campaign);
+            _context.Campaigns.Update(campaign);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        // POST: /Campaign/Delete/1
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var campaign = await _context.Campaigns
-                .FirstOrDefaultAsync(c => c.CampaignId == id);
-
-            if (campaign == null)
-                return NotFound();
-
-            return View(campaign);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var campaign = await _context.Campaigns.FindAsync(id);
+            Campaign? campaign = _context.Campaigns.Find(id);
 
             if (campaign != null)
             {
                 _context.Campaigns.Remove(campaign);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }
