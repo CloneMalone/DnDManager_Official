@@ -6,20 +6,21 @@ namespace DnDManager.Models
     {
         public int CampaignId { get; set; }
 
-        [Required(ErrorMessage = "Campaign name is required.")]
+        [Required]
         [StringLength(100)]
+        [Display(Name = "Campaign Name")]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Description is required.")]
-        [StringLength(500)]
-        public string Description { get; set; } = string.Empty;
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
 
-        [Display(Name = "Dungeon Master")]
         [StringLength(100)]
+        [Display(Name = "Dungeon Master")]
         public string? DmName { get; set; }
 
-        public ICollection<Character>? Characters { get; set; }
-        public ICollection<SessionLog>? SessionLogs { get; set; }
-        public ICollection<Combatant>? Combatants { get; set; }
+        // Navigation properties
+        public List<Character> Characters { get; set; } = new List<Character>();
+        public List<SessionLog> SessionLogs { get; set; } = new List<SessionLog>();
+        public List<Combatant> Combatants { get; set; } = new List<Combatant>();
     }
 }
