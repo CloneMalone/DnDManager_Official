@@ -1,6 +1,5 @@
 using DnDManager.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DnDManager.Controllers
 {
@@ -13,23 +12,21 @@ namespace DnDManager.Controllers
             _context = context;
         }
 
-        // GET: Character
-        public async Task<IActionResult> Index()
+        // GET: /Character/Index?campaignId=1
+        public IActionResult Index(int campaignId)
         {
-            var characters = await _context.Set<Character>().ToListAsync();
+            List<Character> characters = _context.Characters
+                .Where(c => c.CampaignId == campaignId)
+                .ToList();
+
+            ViewBag.CampaignId = campaignId;
             return View(characters);
         }
 
-        // GET: Character/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: /Character/Details/1
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var character = await _context.Set<Character>()
-                .FirstOrDefaultAsync(c => c.CharacterId == id);
+            Character? character = _context.Characters.Find(id);
 
             if (character == null)
             {
@@ -39,36 +36,33 @@ namespace DnDManager.Controllers
             return View(character);
         }
 
-        // GET: Character/Create
-        public IActionResult Create()
+        // GET: /Character/Create?campaignId=1
+        public IActionResult Create(int campaignId)
         {
+            ViewBag.CampaignId = campaignId;
             return View();
         }
 
-        // POST: Character/Create
+        // POST: /Character/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Character character)
+        public IActionResult Create([Bind("Name,Class,Race,Level,MaxHP,CurrentHP,AC,InitiativeBonus,Status,CampaignId")] Character character)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(character);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.CampaignId = character.CampaignId;
+                return View(character);
             }
 
-            return View(character);
+            _context.Characters.Add(character);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { campaignId = character.CampaignId });
         }
 
-        // GET: Character/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: /Character/Edit/1
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var character = await _context.Set<Character>().FindAsync(id);
+            Character? character = _context.Characters.Find(id);
 
             if (character == null)
             {
@@ -78,46 +72,36 @@ namespace DnDManager.Controllers
             return View(character);
         }
 
-        // POST: Character/Edit/5
+        // POST: /Character/Edit/1
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Character character)
+        public IActionResult Edit([Bind("CharacterId,Name,Class,Race,Level,MaxHP,CurrentHP,AC,InitiativeBonus,Status,CampaignId")] Character character)
         {
-            if (id != character.CharacterId)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return View(character);
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(character);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CharacterExists(character.CharacterId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+            _context.Characters.Update(character);
+            _context.SaveChanges();
 
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(character);
+            return RedirectToAction("Index", new { campaignId = character.CampaignId });
         }
 
-        // (Optional but recommended later)
-        private bool CharacterExists(int id)
+        // POST: /Character/Delete/1
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            return _context.Set<Character>()
-                .Any(c => c.CharacterId == id);
+            Character? character = _context.Characters.Find(id);
+
+            if (character != null)
+            {
+                int campaignId = character.CampaignId;
+                _context.Characters.Remove(character);
+                _context.SaveChanges();
+                return RedirectToAction("Index", new { campaignId = campaignId });
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
